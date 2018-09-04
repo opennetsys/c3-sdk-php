@@ -23,3 +23,7 @@ test/hashutil:
 .PHONY: test/payload
 test/payload:
 	echo '["setItem", "foo", "bar"]' |  nc localhost 3330
+
+.PHONY: run/example
+run/example:
+	php example.php

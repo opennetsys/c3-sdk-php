@@ -12,25 +12,27 @@ Here's a hello world example
 require_once('./index.php');
 require_once('./util.php');
 
-$client = new Client;
-
 class App {
+  public $client;
+
+  function __construct() {
+    $this->client = new Client;
+  }
+
   function setItem($key, $value) {
-    global $client;
-    $client->state()->set(string2ByteArray($key), string2ByteArray($value));
+    $this->client->state()->set(string2ByteArray($key), string2ByteArray($value));
   }
 
   function getItem($key) {
-    global $client;
-    $result = $client->state()->get(string2ByteArray($key));
+    $result = $this->client->state()->get(string2ByteArray($key));
     return byteArray2String($result['value']);
   }
 }
 
 $app = new App;
-$client->registerMethod('setItem', ['string', 'string'], array($app, 'setItem'));
-$client->registerMethod('getItem', ['string'], array($app, 'getItem'));
-$client->serve();
+$app->client->registerMethod('setItem', ['string', 'string'], array($app, 'setItem'));
+$app->client->registerMethod('getItem', ['string'], array($app, 'getItem'));
+$app->client->serve();
 ```
 
 ## Test
