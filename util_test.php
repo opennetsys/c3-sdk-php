@@ -1,6 +1,6 @@
 <?php
 
-include('./util.php');
+require_once('./util.php');
 
 $byteArray = unpack('C*', 'hello');
 assert(string2ByteArray('hello') == $byteArray);

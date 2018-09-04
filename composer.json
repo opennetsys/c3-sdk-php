@@ -1,5 +1,6 @@
 {
     "require": {
-        "brick/math": "^0.7.3"
+        "brick/math": "^0.7.3",
+        "evenement/evenement": "^3.0"
     }
 }

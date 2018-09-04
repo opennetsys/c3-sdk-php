@@ -1,6 +1,6 @@
 <?php
 
-include('./util.php');
+require_once('./util.php');
 
 function encodeString($string) {
   return strtolower(addLeader(string2Hex($string)));

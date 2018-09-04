@@ -1,6 +1,6 @@
 <?php
 
-include('./hexutil.php');
+require_once('./hexutil.php');
 
 assert(encodeString('hello') == '0x68656c6c6f');
 assert(encodeString('123') == '0x313233');

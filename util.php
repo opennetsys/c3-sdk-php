@@ -1,6 +1,6 @@
 <?php
 
-include('./vendor/autoload.php');
+require_once('./vendor/autoload.php');
 use Brick\Math\BigInteger;
 
 function BN($string, $format='') {
@@ -27,14 +27,12 @@ function byteArray2String($byteArray) {
 function byteArray2Hex($byteArray) {
   $chars = array_map("chr", $byteArray);
   $bin = join($chars);
-  $hex = bin2hex($bin);
-  return $hex;
+  return bin2hex($bin);
 }
 
 function hex2ByteArray($hexString) {
   $string = hex2bin($hexString);
-  $byteArray = unpack('C*', $string);
-  return $byteArray;
+  return unpack('C*', $string);
 }
 
 function string2Hex($string) {

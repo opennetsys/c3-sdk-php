@@ -1,5 +1,11 @@
 <?php
 
+require_once('./util.php');
+require_once('./vendor/autoload.php');
+use Evenement\EventEmitter;
+
+$emitter = new Evenement\EventEmitter();
+
 error_reporting(E_ALL);
 
 // Allow the script to hang around waiting for connections
@@ -9,29 +15,31 @@ set_time_limit(0);
 // we're receiving as it comes in
 ob_implicit_flush();
 
-$store = (object)[];
+$store = array();
+$registeredMethods = array();
 
 class State {
   function set($key, $value) {
-    //$store[key.toString('hex')] = value.toString('hex')
-    //writeFile($sdk->statefile, toJSONS($store))
+    global $sdk;
+    global $store;
+    $store[byteArray2Hex($key)] = byteArray2Hex($value);
+    $fp = fopen($sdk->statefile, 'w');
+    fwrite($fp, json_encode($store));
+    fclose($fp);
   }
 
   function get($key) {
-    //$v = $store[$key.toString('hex')]
-    //$found = ($v !== undefined)
-    //$value = Buffer.from($v, 'hex')
+    global $store;
+    $v = $store[byteArray2Hex($key)];
+    $found = $v != null;
+    $value = hex2ByteArray($v);
 
-    /*
-    return {
-      found: $found,
-      value: $value
-    }
-     */
+    return [
+      'found' => $found,
+      'value' => $value
+    ];
   }
 }
-
-$state = new State;
 
 class Sdk {
   public $statefile = '/tmp/state.json';
@@ -41,6 +49,7 @@ class Sdk {
       return;
     }
 
+    global $store;
     $json = file_get_contents($this->statefile);
     if ($json != '') {
       $json = json_decode($json, true);
@@ -49,39 +58,45 @@ class Sdk {
         $store[$key] = $value;
       }
     }
-
-    //echo '<pre>'; print_r($store);
   }
 
-  /*
-  listen() {
-    // TODO: on listen data, run
-    this.processPayload(data);
-  },
+  function listen() {
+    global $emitter;
+    $emitter->on('data', function ($data) {
+      $this->processPayload($data);
+    });
+  }
 
-  processPayload($payload) {
-    const args = JSON.parse(payload);
-    this.invoke(args[0], args.slice(1));
-  },
+  function processPayload($payload) {
+    $args = json_decode($payload, true);
+    $this->invoke($args[0], array_slice($args, 1));
+  }
 
-  invoke($methodName, $params) {
+  function invoke($methodName, $params) {
+    global $registeredMethods;
     $method = $registeredMethods[$methodName];
-    if (!$method) {
-      return;
-    }
 
-    $method(...params);
+    $method[0]->{$method[1]}(...$params);
   }
-  */
 }
 
+$sdk = new Sdk;
 
 class Client {
     function __construct() {
-      $sdk = new Sdk;
+      global $sdk;
       $sdk->setInitialState();
-      // TODO: run async
-      // sdk.listen();
+      $sdk->listen();
+    }
+
+    function registerMethod($methodName, $types, $fn) {
+      global $registeredMethods;
+      $registeredMethods[$methodName] = array();
+      $registeredMethods[$methodName] = $fn;
+    }
+
+    function state() {
+      return new State;
     }
 
     function serve() {
@@ -98,17 +113,12 @@ class Client {
       while(true) {
         $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
         $input = socket_read($spawn, 1024) or die("Could not read input\n");
-        echo $input;
-        //$output = $input . "\n";
-        //socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
+        global $emitter;
+        $emitter->emit('data', [$input]);
         socket_close($spawn);
       }
 
     }
 }
-
-$client = new Client;
-
-$client->serve();
 
 ?>
