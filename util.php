@@ -1,5 +1,20 @@
 <?php
 
+include('./vendor/autoload.php');
+use Brick\Math\BigInteger;
+
+function BN($string, $format='') {
+  if ($string == '') {
+    $string = '0';
+  }
+
+  if ($format == 'hex') {
+    return BigInteger::parse($string, 16);
+  }
+
+  return BigInteger::of($string);
+}
+
 function string2ByteArray($string) {
   return unpack('C*', $string);
 }
@@ -29,5 +44,6 @@ function string2Hex($string) {
 function hex2String($hexString) {
   return hex2bin($hexString);
 }
+
 
 ?>

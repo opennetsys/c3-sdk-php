@@ -1,0 +1,47 @@
+[
+    {
+        "name": "brick/math",
+        "version": "0.7.3",
+        "version_normalized": "0.7.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/brick/math.git",
+            "reference": "e599ac0d639d8c77baab78a893d5287e65703e4d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/brick/math/zipball/e599ac0d639d8c77baab78a893d5287e65703e4d",
+            "reference": "e599ac0d639d8c77baab78a893d5287e65703e4d",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.1"
+        },
+        "require-dev": {
+            "php-coveralls/php-coveralls": "2.*",
+            "phpunit/phpunit": "7.*"
+        },
+        "time": "2018-08-20T17:13:41+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Brick\\Math\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Arbitrary-precision arithmetic library",
+        "keywords": [
+            "Arbitrary-precision",
+            "BigInteger",
+            "BigRational",
+            "arithmetic",
+            "bigdecimal",
+            "brick",
+            "math"
+        ]
+    }
+]

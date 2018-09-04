@@ -1,6 +1,6 @@
 <?php
 
-include './util.php';
+include('./util.php');
 
 function encodeString($string) {
   return strtolower(addLeader(string2Hex($string)));
@@ -23,12 +23,12 @@ function decodeBytes($src) {
   return hex2ByteArray(byteArray2String($src));
 }
 
-function encodeBigInt($i) {
-  //return strtolower(addLeader(i.toString('hex')))
+function encodeBigInt($bn) {
+  return strtolower(addLeader($bn->toBase(16)));
 }
 
 function decodeBigInt($hexString) {
-  //return new BN(stripLeader(hexStr), 'hex')
+  return BN(stripLeader($hexString), 'hex');
 }
 
 function stripLeader($hexString) {
