@@ -1,10 +1,10 @@
 <?php
 
-require_once('./util.php');
-require_once('./vendor/autoload.php');
-use Evenement\EventEmitter;
+namespace SDK;
 
-$emitter = new Evenement\EventEmitter();
+require_once(__DIR__.'/../../vendor/autoload.php');
+use SDK\Util;
+use Evenement\EventEmitter;
 
 error_reporting(E_ALL);
 
@@ -20,19 +20,18 @@ $registeredMethods = array();
 
 class State {
   function set($key, $value) {
-    global $sdk;
     global $store;
-    $store[byteArray2Hex($key)] = byteArray2Hex($value);
-    $fp = fopen($sdk->statefile, 'w');
+    $store[Util::byteArray2Hex($key)] = Util::byteArray2Hex($value);
+    $fp = fopen(Kit::statefile, 'w');
     fwrite($fp, json_encode($store));
     fclose($fp);
   }
 
   function get($key) {
     global $store;
-    $v = $store[byteArray2Hex($key)];
+    $v = $store[Util::byteArray2Hex($key)];
     $found = $v != null;
-    $value = hex2ByteArray($v);
+    $value = Util::hex2ByteArray($v);
 
     return [
       'found' => $found,
@@ -41,16 +40,21 @@ class State {
   }
 }
 
-class Sdk {
-  public $statefile = '/tmp/state.json';
+class Kit {
+  const statefile = '/tmp/state.json';
+  public $emitter;
+
+  function __construct() {
+    $this->emitter = new EventEmitter();
+  }
 
   function setInitialState() {
-    if (!file_exists($this->statefile)) {
+    if (!file_exists(Kit::statefile)) {
       return;
     }
 
     global $store;
-    $json = file_get_contents($this->statefile);
+    $json = file_get_contents(Kit::statefile);
     if ($json != '') {
       $json = json_decode($json, true);
 
@@ -61,8 +65,7 @@ class Sdk {
   }
 
   function listen() {
-    global $emitter;
-    $emitter->on('data', function ($data) {
+    $this->emitter->on('data', function ($data) {
       $this->processPayload($data);
     });
   }
@@ -80,13 +83,13 @@ class Sdk {
   }
 }
 
-$sdk = new Sdk;
-
 class Client {
+    public $sdk;
+
     function __construct() {
-      global $sdk;
-      $sdk->setInitialState();
-      $sdk->listen();
+      $this->sdk = new Kit;
+      $this->sdk->setInitialState();
+      $this->sdk->listen();
     }
 
     function registerMethod($methodName, $types, $fn) {
@@ -113,8 +116,7 @@ class Client {
       while(true) {
         $spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
         $input = socket_read($spawn, 1024) or die("Could not read input\n");
-        global $emitter;
-        $emitter->emit('data', [$input]);
+        $this->sdk->emitter->emit('data', [$input]);
         socket_close($spawn);
       }
 

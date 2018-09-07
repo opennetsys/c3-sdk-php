@@ -1,6 +1,21 @@
 {
+    "name": "c3systems/c3-sdk-php",
+    "type": "library",
+    "license": "GNU APGL 3.0",
+    "authors": [
+        {
+            "name": "Miguel Mota",
+            "email": "hello@miguelmota.com"
+        }
+    ],
     "require": {
         "brick/math": "^0.7.3",
-        "evenement/evenement": "^3.0"
+        "evenement/evenement": "^3.0",
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "SDK": "src/"
+        }
     }
 }
