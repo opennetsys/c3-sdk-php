@@ -5,6 +5,10 @@ all:
 install:
 	@composer install
 
+.PHONY: validate
+validate:
+	@composer validate
+
 .PHONY: test
 test: test/client test/util test/hexutil test/hashutil
 

@@ -1,7 +1,8 @@
 {
     "name": "c3systems/c3-sdk-php",
+    "description": "The C3 SDK for PHP",
     "type": "library",
-    "license": "GNU APGL 3.0",
+    "license": "AGPL-3.0",
     "authors": [
         {
             "name": "Miguel Mota",
