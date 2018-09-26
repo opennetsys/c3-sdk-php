@@ -30,7 +30,7 @@ test/hashutil:
 
 .PHONY: test/payload
 test/payload:
-	@echo '["setItem", "foo", "bar"]' |  nc localhost 3330
+	@echo '["setItem", "foo", "bar"]' |  nc localhost 3333
 
 .PHONY: run/example
 run/example:
