@@ -80,6 +80,11 @@ class Kit {
 
   function processPayload($payload) {
     $args = json_decode($payload, true);
+
+    if (!isset($args[0])) {
+      return;
+    }
+
     $this->invoke($args[0], array_slice($args, 1));
   }
 
