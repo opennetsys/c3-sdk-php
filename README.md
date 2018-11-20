@@ -50,4 +50,4 @@ make test
 
 ## License
 
-[GNU AGPL 3.0](LICENSE)
+[MIT](LICENSE)
